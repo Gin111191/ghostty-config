@@ -1,0 +1,87 @@
+# Ghostty — matching the look and feel of ~/.config/kitty/kitty.conf and
+# ~/.config/wezterm/wezterm.lua as closely as Ghostty allows.
+#
+# Ghostty actually reads config from here (confirmed with `ghostty +show-config` after
+# writing a test value) even though it also keeps an (unused, empty) file at
+# ~/Library/Application Support/com.mitchellh.ghostty/config.ghostty. XDG_CONFIG_HOME
+# is set to ~/.config on this machine, which is why the XDG path wins.
+#
+# Reload: Ghostty reloads automatically on save (or Cmd+Shift+,).
+
+# ── Font ──────────────────────────────────────────────────────────────────────
+# Same family as Kitty (the "Mono" variant, strict glyph width) and WezTerm's first
+# fallback choice — keeps icon-heavy UI (lualine, nvim-web-devicons, starship) consistent
+# across all three terminals.
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 13
+# Percentage is an ADJUSTMENT to the original cell height, not an absolute — same meaning
+# as Kitty's `modify_font cell_height 110%` and WezTerm's `line_height = 1.1`.
+adjust-cell-height = 10%
+
+# ── Cursor ────────────────────────────────────────────────────────────────────
+# "beam" in Kitty's vocabulary = "bar" in Ghostty's.
+cursor-style = bar
+cursor-style-blink = true
+
+# ── Selection ─────────────────────────────────────────────────────────────────
+# Ghostty's own default is `copy-on-select = true` — every mouse selection silently
+# overwrites the clipboard. Kitty and WezTerm do NOT do this by default; turned off here
+# to match them and avoid surprise clipboard overwrites.
+copy-on-select = false
+
+# ── Window ────────────────────────────────────────────────────────────────────
+# Kitty's window_padding_width is "8 12 8 12" (top right bottom left). Ghostty only takes
+# an x-axis and a y-axis value (each can itself be "left,right" / "top,bottom" if they
+# need to differ) — 12 horizontal, 8 vertical reproduces the same numbers.
+window-padding-x = 12
+window-padding-y = 8
+
+# Slightly see-through with the desktop blurred behind it — same values as Kitty's
+# background_opacity/background_blur and WezTerm's window_background_opacity/
+# macos_window_background_blur.
+background-opacity = 0.94
+background-blur = 26
+
+# ── Environment ───────────────────────────────────────────────────────────────
+# Same reasoning as kitty.conf: started from a shell inside tmux (typing `ghostty` in
+# another terminal's pane), Ghostty would otherwise pass that outer tmux's variables to
+# its own shells, and programs would believe they run inside a tmux that isn't there —
+# snacks.image wraps every image for it and nothing gets drawn. A tmux started inside
+# Ghostty sets these again for its own panes, so clearing them here is safe.
+env = TMUX=
+env = TMUX_PANE=
+env = TERM_PROGRAM=
+env = TERM_PROGRAM_VERSION=
+
+# ── Colours — "Dusk-Navy" ─────────────────────────────────────────────────────
+# Ported 1:1 from ~/.config/wezterm/wezterm.lua's CUSTOM_SCHEMES["Dusk-Navy"] (the same
+# source ~/.config/kitty/dark-theme.conf was ported from). color8 (bright black) is lifted
+# to #93a1b3 instead of the scheme's own #3D4A6B, same override Kitty's dark-theme.conf
+# makes — the scheme's own value is unreadable for secondary text (line numbers, tool
+# summaries) agents print in ANSI slot 8.
+#
+# Unlike Kitty (swappable theme files + a keybind) or WezTerm (auto-follows the OS and
+# writes theme.lua for Neovim to read), this is a static palette — Ghostty has no config
+# wired up here to toggle light/dark, so it simply starts, and stays, on Dusk-Navy.
+background = #1d2837
+foreground = #EDEEF7
+cursor-color = #A9AFC6
+selection-background = #3D4A6B
+selection-foreground = #EDEEF7
+
+palette = 0=#1A1D26
+palette = 1=#B4637A
+palette = 2=#6E9E8A
+palette = 3=#C9A227
+palette = 4=#5C7CB8
+palette = 5=#8B7BB8
+palette = 6=#6E9AB8
+palette = 7=#A9AFC6
+palette = 8=#93a1b3
+palette = 9=#D18A9E
+palette = 10=#8FBFA9
+palette = 11=#E0C05A
+palette = 12=#7D9BD4
+palette = 13=#A99AD4
+palette = 14=#8FBBD4
+palette = 15=#EDEEF7
