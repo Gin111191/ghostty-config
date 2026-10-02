@@ -7,15 +7,24 @@ default silently copies on every mouse selection, unlike kitty/WezTerm).
 
 ```sh
 git clone https://github.com/Gin111191/ghostty-config ~/.config/ghostty
+ln -sf ~/.config/ghostty/config \
+  ~/Library/Application\ Support/com.mitchellh.ghostty/config.ghostty
 ```
 
 Needs JetBrainsMono Nerd Font installed (same **Mono** variant kitty uses). Ghostty reloads the
 file the moment it is saved (or `Cmd+Shift+,`).
 
-Ghostty on macOS actually reads config from here (`$XDG_CONFIG_HOME/ghostty/config`, confirmed with
-`ghostty +show-config`) even though it also keeps an unused, empty file at `~/Library/Application
-Support/com.mitchellh.ghostty/config.ghostty`. If `XDG_CONFIG_HOME` is unset on a machine, Ghostty
-falls back to `~/.config/ghostty/config` anyway, so the clone path above should still work.
+**The second line above is not optional, even though Ghostty's docs make `$XDG_CONFIG_HOME/ghostty/
+config` sound like the real path.** Running the `ghostty` *CLI* binary from a shell does read that
+XDG path — confirmed with `ghostty +show-config` — because the shell has already exported
+`XDG_CONFIG_HOME`. But the *GUI* app, opened from the Dock/Spotlight/Finder, is started by `launchd`
+with its own environment, which does **not** include anything your `.zshenv` exports — macOS GUI
+apps never inherit a shell's environment this way. So `Ghostty.app` itself always falls back to its
+native macOS path, `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty`, no matter
+what `$XDG_CONFIG_HOME` is set to in any shell. Symptom if the symlink step above is skipped: the
+file at `~/.config/ghostty/config` is correct and `ghostty +show-config` from a terminal shows all
+the right values, but the actual window never changes — because the running app is reading its
+own, separate, empty file instead. The symlink makes both paths resolve to the one real file.
 
 | File | What it holds |
 |---|---|
